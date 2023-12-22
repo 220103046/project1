@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Card</title>
+  <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            position: relative;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+             padding: 20px;
+            padding-bottom: 60px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            clear: both;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Add styles for the product sections */
+        .product {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 190px;
+            float: left;
+            margin-right: 20px;
+            background-color: white;
+            color: black;
+        }
+        .product:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        footer {
+            position: fixed;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+<header>
+  <h1>Online Cosmetic Store - Shopping Cart</h1>
+</header>
+
+<nav>
+  <a href="index.html">Main page</a>
+  <a href="new-products.html">New products</a>
+  <a href="care-cosmetic.html">Care cosmetic</a>
+  <a href="decorative-cosmetics.html">Decorative cosmetics</a>
+  <a href="hair-care.html">Hair care</a>
+  <a href="perfumery.html">Perfumery</a>
+  <a href="gift-certificates.html">Gift certificates</a>
+  <a href="add-your-product.html">Add Your Product</a>
+</nav>
+
+<main>
+  <h2>Your Shopping Cart</h2>
+  <div id="cart-items">
+  </div>
+  <div id="payment-section">
+    <h3>Choose Payment Method</h3>
+    <select id="payment-method">
+      <option value="paypal">Halyk</option>
+      <option value="stripe">Kaspi</option>
+    </select>
+    <button onclick="makePayment()">Pay Now</button>
+  </div>
+</main>
+
+<footer>
+</footer>
+
+<script>
+class Cart {
+  constructor() {
+    this.cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    this.observers = [];
+  }
+
+  subscribe(observerFunction) {
+    this.observers.push(observerFunction);
+  }
+
+  notifyObservers() {
+    this.observers.forEach(observer => observer());
+  }
+
+  loadCartItems() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    cartItemsContainer.innerHTML = '';
+    let totalSum = 0;
+
+    this.cartItems.forEach((item, index) => {
+      totalSum += parseFloat(item.price);
+      const itemElement = document.createElement('div');
+      itemElement.innerHTML = `
+          <p>${item.productName} - Price: ${item.price} тг</p>
+          <button onclick="cart.removeFromCart(${index})">Remove from Cart</button>
+      `;
+      cartItemsContainer.appendChild(itemElement);
+    });
+
+    localStorage.setItem('totalAmount', totalSum.toFixed(2));
+
+    const totalElement = document.createElement('div');
+    totalElement.innerHTML = `<p>Total Price: ${totalSum.toFixed(2)} тг</p>`;
+    cartItemsContainer.appendChild(totalElement);
+
+    if (this.cartItems.length === 0) {
+      cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+    }
+  }
+
+  getTotalAmount() {
+    let totalAmount = localStorage.getItem('totalAmount');
+    return totalAmount && !isNaN(totalAmount) ? parseFloat(totalAmount) : 0;
+  }
+
+  removeFromCart(index) {
+    this.cartItems.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(this.cartItems));
+    this.notifyObservers();
+  }
+}
+
+const cart = new Cart();
+cart.subscribe(() => cart.loadCartItems());
+
+window.cart = cart;
+
+document.addEventListener('DOMContentLoaded', () => {
+  cart.loadCartItems();
+});
+    class PaymentInterface {
+        pay(amount) {
+            throw new Error("Method 'pay' must be implemented.");
+        }
+    }
+
+    class HalykAdapter extends PaymentInterface {
+        constructor(halyk) {
+            super();
+            this.halyk = halyk;
+        }
+
+        pay(amount) {
+            this.halyk.processHalykPayment(amount);
+        }
+    }
+
+    class KaspiAdapter extends PaymentInterface {
+        constructor(kaspi) {
+            super();
+            this.kaspi = kaspi;
+        }
+
+        pay(amount) {
+            this.kaspi.processKaspiPayment(amount);
+        }
+    }
+    class Halyk {
+        processHalykPayment(amount) {
+            console.log(`Оплата на сумму ${amount} тг обработана через Halyk`);
+        }
+    }
+    class Kaspi {
+        processKaspiPayment(amount) {
+            console.log(`Оплата на сумму ${amount} тг обработана через Kaspi`);
+        }
+    }
+    function processPayment(paymentProcessor, amount) {
+        paymentProcessor.pay(amount);
+    }
+        function simulatePaymentProcessing(amount) {
+        console.log(`Симулирование платежа на сумму: ${amount} тг`);
+        alert(`The payment in the amount of ${amount.toFixed(2)}тг successfully simulated.`);
+    }
+    function makePayment() {
+        const selectedPaymentMethod = document.getElementById("payment-method").value;
+        const totalAmount = getTotalAmount();
+
+        if (selectedPaymentMethod === "paypal") {
+            simulatePaymentProcessing(totalAmount);
+        } else if (selectedPaymentMethod === "stripe") {
+            simulatePaymentProcessing(totalAmount);
+        }
+    }
+function getTotalAmount() {
+    let totalAmount = localStorage.getItem('totalAmount');
+    return totalAmount && !isNaN(totalAmount) ? parseFloat(totalAmount) : 0;
+}
+    document.addEventListener('DOMContentLoaded', loadCartItems);
+</script>
+</body>
+</html>
