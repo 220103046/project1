@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Products</title>
+  <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            position: relative;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+             padding: 20px;
+            padding-bottom: 60px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .product {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 190px;
+            float: left;
+            margin-right: 20px;
+            background-color: white; /* Set background color to white */
+            color: black; /* Set text color to black */
+        }
+        .product:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        footer {
+            position: relative;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+<header>
+  <h1>Online Cosmetic Store</h1>
+</header>
+
+<nav>
+  <a href="index.html">Main page</a>
+  <a href="new-products.html">New products</a>
+  <a href="care-cosmetic.html">Care cosmetic</a>
+  <a href="decorative-cosmetics.html">Decorative cosmetics</a>
+  <a href="hair-care.html">Hair care</a>
+  <a href="perfumery.html">Perfumery</a>
+  <a href="gift-certificates.html">Gift certificates</a>
+  <a href="view-card.html">View Cart</a>
+  <a href="add-your-product.html">Add Your Product</a>
+</nav>
+<header>
+  <main>
+    <h2>New Products</h2>
+
+    <div class="product">
+      <img src="imeges/new1.png" alt="Product 1" width="150" height="150">
+      <h3>VIVIENNE SABO jardin enchante</h3>
+      <h4>SHADOW PALETTE</h4>
+      <p>Price: 6 717 ₸</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="imeges/new2.png" alt="Product 2" width="150" height="150">
+      <h3>RAD take your vitamins serum</h3>
+      <h4>VITAMIN C SERUM</h4>
+      <p>Price: 8 338 ₸</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="imeges/new3.png" alt="Product 3" width="150" height="150">
+      <h3>FUNKY MONKEY plushy lipstick</h3>
+      <h4>PLUSH LIPSTICK</h4>
+      <p>Price: 6 391 ₸</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="imeges/new4.png" alt="Product 4"  width="150" height="150">
+      <h3>HISKIN aha + bha + tea tree stop acne</h3>
+      <p>FACE TONER</p>
+      <p>Price: 3 118 ₸</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="imeges/new5.png" alt="Product 5"  width="150" height="150">
+      <h3>ESSENCE lash like a boss instant lift</h3>
+      <h4>MASCARA</h4>
+      <p>Price: 2 094 ₸</p>
+      <button>Add to Cart</button>
+    </div>
+
+  </main>
+  <div id="cart-container"></div>
+  <footer>
+    <p>&copy; Online Cosmetic Store. Call Us: 8(775)9467052</p>
+  </footer>
+  <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            function addToCart(productName, price) {
+                const cleanPrice = price.replace(/[^0-9.]/g, '');
+                cart.push({productName, price: cleanPrice});
+                localStorage.setItem('cart', JSON.stringify(cart));
+                alert(productName + " added to cart!");
+            }
+
+            function removeFromCart(index) {
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                showCart();
+            }
+
+            function showCart() {
+                const cartContainer = document.getElementById('cart-container');
+                cartContainer.innerHTML = '<h2>Your Cart</h2>';
+                cart = JSON.parse(localStorage.getItem('cart')) || []; // Обновляем корзину
+                cart.forEach((item, index) => {
+                    cartContainer.innerHTML += `<div>${item.productName} - Price: ${item.price}
+                                                <button onclick="removeFromCart(${index})">Remove</button></div>`;
+                });
+            }
+
+            document.querySelectorAll('.product button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const product = this.parentNode;
+                    const productName = product.querySelector('h3').textContent;
+                    const price = product.querySelector('p').textContent;
+                    addToCart(productName, price);
+                });
+            });
+
+            document.getElementById('view-cart').addEventListener('click', showCart);
+
+            window.removeFromCart = removeFromCart;
+        });
+    </script>
+</header>
+</body>
+</html>
